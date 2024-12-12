@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { AppContext } from "../context/AppContext";
 
 function CheckoutForm() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -8,7 +9,7 @@ function CheckoutForm() {
 
   const stripe = useStripe();
   const elements = useElements();
-
+  const { backendUrl } = useContext(AppContext);
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -21,16 +22,13 @@ function CheckoutForm() {
     const card = elements.getElement(CardElement);
 
     // Call backend to create a payment intent
-    const response = await fetch(
-      "http://localhost:4000/create-payment-intent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ amount: 1000 }), // $10 in cents
-      }
-    );
+    const response = await fetch(backendUrl + "/create-payment-intent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amount: 1000 }), // $10 in cents
+    });
     const { clientSecret } = await response.json();
 
     // Confirm the payment with the clientSecret

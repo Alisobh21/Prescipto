@@ -39,6 +39,7 @@ function CheckoutForm() {
     currencySymbol,
     slotDateFormat,
     updateAppointment,
+    backendUrl,
   } = useContext(AppContext);
 
   const { appointmentId } = useParams();
@@ -75,7 +76,7 @@ function CheckoutForm() {
     const card = elements.getElement(CardElement);
 
     const { data } = await axios.post(
-      "http://localhost:4000/api/user/checkout",
+      backendUrl + "/api/user/checkout",
       { amount: Number(appointmentData.docData.fees) * 100 },
       { headers: { token } }
     );
